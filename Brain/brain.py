@@ -23,21 +23,6 @@ client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 NOTES_DIR = Path(__file__).resolve().parent / "notes"
 NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
-# Если папка ./notes пустая, создаем стартовые заметки для примера
-if not any(f.is_file() for f in NOTES_DIR.iterdir()):
-    (NOTES_DIR / "opencode.md").write_text(
-        "Настройка OpenCode: конфиг opencode.json лежит в ~/.config/opencode/ и подключается к Ollama по порту 11434.",
-        encoding="utf-8",
-    )
-    (NOTES_DIR / "langgraph.md").write_text(
-        "Ошибка в LangGraph: чтобы граф не зацикливался, передавайте recursion_limit в конфиг при вызове invoke.",
-        encoding="utf-8",
-    )
-    (NOTES_DIR / "borscht.md").write_text(
-        "Рецепт борща: для классического борща нужен говяжий бульон, свекла, капуста и картофель.",
-        encoding="utf-8",
-    )
-
 documents = SimpleDirectoryReader(str(NOTES_DIR)).load_data()
 splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
 nodes = splitter.get_nodes_from_documents(documents)
@@ -59,9 +44,8 @@ class State(TypedDict):
     answer: str            # Финальный ответ
 
 
-# ============================================================
-# ШАГ 3: Узлы графа (retrieve, grade_documents, generate)
-# ============================================================
+#Узлы графа (retrieve, grade_documents, generate)
+
 def retrieve(state: State) -> dict:
     """Поиск документов через BM25Retriever."""
     retrieved = retriever.retrieve(state["question"])
@@ -129,9 +113,9 @@ def generate(state: State) -> dict:
         return {"answer": f"[Не удалось вызвать LLM ({e})]\nНайденный контекст:\n{context}"}
 
 
-# ============================================================
+
 # ШАГ 4: Сборка StateGraph с одним условным переходом
-# ============================================================
+
 def route_after_grade(state: State) -> Literal["generate", "end"]:
     return "generate" if state["documents"] else "end"
 
