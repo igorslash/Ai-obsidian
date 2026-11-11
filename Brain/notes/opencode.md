@@ -1,0 +1,1 @@
+Настройка OpenCode: конфиг opencode.json лежит в ~/.config/opencode/ и подключается к Ollama по порту 11434.
