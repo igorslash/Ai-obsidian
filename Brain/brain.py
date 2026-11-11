@@ -9,7 +9,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.retrievers.bm25 import BM25Retriever
 from openai import OpenAI
 
-# --- НАСТРОЙКИ LLM (подходит для OpenAI, OpenRouter, Ollama и т.д.) ---
+# НАСТРОЙКИ LLM (подходит для OpenAI, OpenRouter, Ollama и т.д.) ---
 LLM_BASE_URL = os.getenv("OPENAI_BASE_URL", "http://localhost:11434/v1")
 LLM_API_KEY = os.getenv("OPENAI_API_KEY", "ollama")
 LLM_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -17,9 +17,9 @@ LLM_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 
 
-# ============================================================
+
 # ШАГ 1: Индексация (SimpleDirectoryReader + BM25Retriever)
-# ============================================================
+
 NOTES_DIR = Path(__file__).resolve().parent / "notes"
 NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -35,9 +35,9 @@ retriever = BM25Retriever.from_defaults(
 )
 
 
-# ============================================================
+
 # ШАГ 2: Состояние графа (State)
-# ============================================================
+
 class State(TypedDict):
     question: str          # Вопрос пользователя
     documents: list[str]   # Найденные документы
